@@ -107,46 +107,28 @@ def cosine_annealing(step, total_steps, lr_max, lr_min):
 
 if __name__ == "__main__":
     # parse args/config file
-    parser = configargparse.ArgParser(default_config_files=["./baseline.yml"])
+    parser = configargparse.ArgParser(default_config_files=["./config.yml"])
     parser.add_argument(
         "-c",
         "--config",
         is_config_file=True,
-        default="./baseline.yml",
+        default="./config.yml",
         help="config file location",
     )
-    parser.add_argument(
-        "-e", "--epochs", type=int, default=1, help="number of epochs to train for"
-    )
-    parser.add_argument(
-        "--arch", type=str, default="resnet18", help="model architecture"
-    )
-    parser.add_argument(
-        "--pretrained", action="store_true", help="use pretrained model"
-    )
+    parser.add_argument("-e", "--epochs", type=int, default=1, help="number of epochs to train for")
+    parser.add_argument("--arch", type=str, default="resnet18", help="model architecture")
+    parser.add_argument("--pretrained", action="store_true", help="use pretrained model")
     parser.add_argument("--name", type=str, default="random", help="run name")
     parser.add_argument("--dataset", type=str, default="cifar10", help="dataset name")
-    parser.add_argument(
-        "-r", "--dataset-root", type=str, default="./data/", help="dataset filepath"
-    )
+    parser.add_argument("-r", "--dataset-root", type=str, default="./data/", help="dataset filepath")
     parser.add_argument("--batch-size", type=int, default=8, help="batch size")
-    parser.add_argument(
-        "--workers", type=int, default=2, help="dataloader worker threads"
-    )
+    parser.add_argument("--workers", type=int, default=2, help="dataloader worker threads")
     parser.add_argument("--lr", type=float, default=0.1, help="learning rate")
-    parser.add_argument(
-        "--momentum", type=float, default=0.9, help="optimizer momentum"
-    )
-    parser.add_argument(
-        "--weight-decay", type=float, default=0.0005, help="optimizer weight decay"
-    )
-    parser.add_argument(
-        "-S", "--seed", type=int, default=-1, help="random seed, -1 for random"
-    )
+    parser.add_argument("--momentum", type=float, default=0.9, help="optimizer momentum")
+    parser.add_argument("--weight-decay", type=float, default=0.0005, help="optimizer weight decay")
+    parser.add_argument("-S", "--seed", type=int, default=-1, help="random seed, -1 for random")
     parser.add_argument("--device", type=str, default="cuda", help="gpu(s) to use")
-    parser.add_argument(
-        "--root", type=str, default="runs", help="root of folder to save runs in"
-    )
+    parser.add_argument("--root", type=str, default="runs", help="root of folder to save runs in")
     configs, _ = parser.parse_known_args()
 
     #########################################
@@ -170,9 +152,7 @@ if __name__ == "__main__":
     configs.root = f"{configs.root}/{configs.name}"
 
     # save configs object as yaml
-    with open(
-        os.path.join(configs.root, "baseline.yaml"), "w", encoding="utf-8"
-    ) as file:
+    with open(os.path.join(configs.root, "baseline.yaml"), "w", encoding="utf-8") as file:
         yaml.dump(vars(configs), file)
 
     ####################
@@ -192,18 +172,12 @@ if __name__ == "__main__":
                     transforms.CenterCrop(224),
                     # lambda x: x / 255.0,  # match ToTensor()'s conversion to [0,1]
                     transforms.ToTensor(),
-                    transforms.Normalize(
-                        [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
-                    ),  # imagenet1k mean and sd
+                    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),  # imagenet1k mean and sd
                 ]
             )
 
-            training_data = datasets.ImageNet(
-                root=configs.dataset_root, split="train", transform=transform
-            )
-            val_data = datasets.ImageNet(
-                root=configs.dataset_root, split="val", transform=transform
-            )
+            training_data = datasets.ImageNet(root=configs.dataset_root, split="train", transform=transform)
+            val_data = datasets.ImageNet(root=configs.dataset_root, split="val", transform=transform)
 
         case "cifar10":
             NUM_CLASSES = 10
@@ -216,18 +190,14 @@ if __name__ == "__main__":
                     transforms.RandomHorizontalFlip(),
                     transforms.RandomCrop(32, padding=4),
                     transforms.ToTensor(),
-                    transforms.Normalize(
-                        [0.4914, 0.4822, 0.4465], [0.2470, 0.2435, 0.2616]
-                    ),
+                    transforms.Normalize([0.4914, 0.4822, 0.4465], [0.2470, 0.2435, 0.2616]),
                 ]
             )
             val_transform = transforms.Compose(
                 [
                     lambda x: x.convert("RGB"),
                     transforms.ToTensor(),
-                    transforms.Normalize(
-                        [0.4914, 0.4822, 0.4465], [0.2470, 0.2435, 0.2616]
-                    ),
+                    transforms.Normalize([0.4914, 0.4822, 0.4465], [0.2470, 0.2435, 0.2616]),
                 ]
             )
 
@@ -255,18 +225,14 @@ if __name__ == "__main__":
                     transforms.RandomHorizontalFlip(),
                     transforms.RandomCrop(32, padding=4),
                     transforms.ToTensor(),
-                    transforms.Normalize(
-                        [0.5071, 0.4867, 0.4408], [0.2675, 0.2565, 0.2761]
-                    ),  # cifar100 mean and sd
+                    transforms.Normalize([0.5071, 0.4867, 0.4408], [0.2675, 0.2565, 0.2761]),  # cifar100 mean and sd
                 ]
             )
             val_transform = transforms.Compose(
                 [
                     lambda x: x.convert("RGB"),
                     transforms.ToTensor(),
-                    transforms.Normalize(
-                        [0.5071, 0.4867, 0.4408], [0.2675, 0.2565, 0.2761]
-                    ),  # cifar100 mean and sd
+                    transforms.Normalize([0.5071, 0.4867, 0.4408], [0.2675, 0.2565, 0.2761]),  # cifar100 mean and sd
                 ]
             )
 
@@ -311,29 +277,11 @@ if __name__ == "__main__":
     # choose model architecture
     match configs.arch.lower():
         case "resnet18":
-            model = models.resnet18(
-                weights=(
-                    models.ResNet18_Weights.IMAGENET1K_V1
-                    if configs.pretrained
-                    else None
-                )
-            )
+            model = models.resnet18(weights=(models.ResNet18_Weights.IMAGENET1K_V1 if configs.pretrained else None))
         case "resnet34":
-            model = models.resnet34(
-                weights=(
-                    models.ResNet34_Weights.IMAGENET1K_V1
-                    if configs.pretrained
-                    else None
-                )
-            )
+            model = models.resnet34(weights=(models.ResNet34_Weights.IMAGENET1K_V1 if configs.pretrained else None))
         case "resnet50":
-            model = models.resnet50(
-                weights=(
-                    models.ResNet50_Weights.IMAGENET1K_V1
-                    if configs.pretrained
-                    else None
-                )
-            )
+            model = models.resnet50(weights=(models.ResNet50_Weights.IMAGENET1K_V1 if configs.pretrained else None))
         case _:
             raise ValueError(f"Model {configs.arch} not supported")
 
@@ -369,7 +317,7 @@ if __name__ == "__main__":
 
     for epoch in range(configs.epochs):
         train_stats = train_loop(train_dataloader, model, optimizer)
-        test_stats = test_loop(test_dataloader, model)
+        test_stats = val_loop(val_dataloader, model)
         mlflow.log_metrics(train_stats | test_stats, step=epoch)
     print("Done!")
 
