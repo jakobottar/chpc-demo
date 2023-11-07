@@ -1,9 +1,0 @@
-configargparse
-namegenerator 
-numpy 
-torch 
-torchvision
-torchmetrics 
-pyyaml
-mlflow
-tqdm
