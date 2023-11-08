@@ -325,5 +325,5 @@ if __name__ == "__main__":
     ## SAVE MODEL ##
     ################
     torch.save(model.state_dict(), os.path.join(configs.root, "model-weights.pth"))
-    mlflow.pytorch.log_model(model, "model", pip_requirements="requirements.txt")
+    mlflow.pytorch.log_model(model, "model", conda_env="env.yml")
     mlflow.log_artifacts(configs.root)
